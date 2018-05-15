@@ -1566,7 +1566,7 @@ RSI_990 <- function(df, outp_fname = NULL, ...){
 }
 
 #' @title Combined Index (CI1)
-#' @description Calculate CI1
+#' @description Calculate CI1 (since the bands with 735nm and 736nm are used only a data-set with very narrow bandwidths can be used)
 #' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
 #' columns (layers) are named following Quantalab's conventions.
 #' @param outp_fname In case the input is raster data, this is the optional output
@@ -1592,7 +1592,7 @@ CI1 <- function(df, outp_fname = NULL, ...){
 }
 
 #' @title Combined Index (CI2)
-#' @description Calculate CI2
+#' @description Calculate CI2 (since the bands with 735nm and 736nm are used only a data-set with very narrow bandwidths can be used)
 #' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
 #' columns (layers) are named following Quantalab's conventions.
 #' @param outp_fname In case the input is raster data, this is the optional output
@@ -1761,6 +1761,90 @@ S1260 <- function(df, outp_fname = NULL, ...){
 
 
   outp <- (R1260 - R660) / (R1260 + R660)
+
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+##################################################################
+#
+# Extended Indices for exploring
+#
+# Florescense band (around 760nm)
+#
+##################################################################
+
+#' @title Ratio before 760 nm
+#' @description Calculates the ratio of the fluorescense absorption band and the band before
+#' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
+#' columns (layers) are named following Quantalab's conventions.
+#' @param outp_fname In case the input is raster data, this is the optional output
+#' filename to write the result to
+#' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
+#' @return A vector with the value of the index
+#' @references
+#' @examples
+#' @export
+RB760 <- function(df, outp_fname = NULL, ...){
+  R760 <- get_band_of_wavelength(df, wavelengths_in_nm = 760, ...)
+  R755 <- get_band_of_wavelength(df, wavelengths_in_nm = 755, ...)
+
+
+  outp <- (R755) / (R760)
+
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Ratio after 760 nm
+#' @description Calculates the ratio of the fluorescense absorption band and the band after
+#' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
+#' columns (layers) are named following Quantalab's conventions.
+#' @param outp_fname In case the input is raster data, this is the optional output
+#' filename to write the result to
+#' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
+#' @return A vector with the value of the index
+#' @references
+#' @examples
+#' @export
+RA760 <- function(df, outp_fname = NULL, ...){
+  R760 <- get_band_of_wavelength(df, wavelengths_in_nm = 760, ...)
+  R765 <- get_band_of_wavelength(df, wavelengths_in_nm = 765, ...)
+
+
+  outp <- (R765) / (R760)
+
+  if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
+    raster::writeRaster(outp, filename = outp_fname, overwrite = T)
+    cat('Spectral index written away as raster to: ',outp_fname, '\n')
+  }
+  return(outp)
+}
+
+#' @title Triangle Ratio around 760 nm
+#' @description Calculates area of the fluorescense absorption band and the band before and after
+#' @param df A data frame (or raster::brick) where columns (layers) represent reflectance measurements in a single wavelength, and
+#' columns (layers) are named following Quantalab's conventions.
+#' @param outp_fname In case the input is raster data, this is the optional output
+#' filename to write the result to
+#' @param ... Arguments to be passed to get_band_of_wavelength, particularly band_txt, splitter, and i.
+#' @return A vector with the value of the index
+#' @references
+#' @examples
+#' @export
+FA760 <- function(df, outp_fname = NULL, ...){
+  R755 <- get_band_of_wavelength(df, wavelengths_in_nm = 755, ...)
+  R760 <- get_band_of_wavelength(df, wavelengths_in_nm = 760, ...)
+  R765 <- get_band_of_wavelength(df, wavelengths_in_nm = 765, ...)
+
+
+  outp <- ABS((756.6*(R760 - R765)) + (760.3*(R765 - R755)) + (763.9*(R755 - R760)) / 2)
 
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
