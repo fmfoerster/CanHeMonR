@@ -1844,7 +1844,7 @@ FA760 <- function(df, outp_fname = NULL, ...){
   R765 <- get_band_of_wavelength(df, wavelengths_in_nm = 765, ...)
 
 
-  outp <- ABS((756.6*(R760 - R765)) + (760.3*(R765 - R755)) + (763.9*(R755 - R760)) / 2)
+  outp <- abs((756.6*(R760 - R765)) + (760.3*(R765 - R755)) + (763.9*(R755 - R760)) / 2)
 
   if ((!is.null(outp_fname)) & (class(outp) == "RasterLayer")){
     raster::writeRaster(outp, filename = outp_fname, overwrite = T)
