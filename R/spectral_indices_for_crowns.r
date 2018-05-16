@@ -53,9 +53,9 @@ spectral_indices_for_crowns <- function(crown_SpatPoldf, r_fname, index_names = 
     r_crown_vals <- raster::extract(r, crown_SpatPointdf)
   }else{
     #averaging the band values across each crown
-    r_crown_vals <- raster::extract(r,crown_SpatPoldf,fun = mean, small=T, weights=T, na.rm=T)
+    r_crown_vals <- raster::extract(r,crown_SpatPoldf,fun = mean, na.rm=T)
   }
-
+#weights=T, small=T
 
   #get the additional attributes to append output to
   r_crown_vals_df <- slot(crown_SpatPoldf,"data")
